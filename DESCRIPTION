@@ -20,3 +20,5 @@ Imports:
     tmap,
     rgeos,
     raster
+Suggests: 
+    testthat
