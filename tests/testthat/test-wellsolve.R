@@ -11,7 +11,7 @@ test_that("wellsolve() works", {
   # This helps the algorithm search for the result in the correct area
   xstart<- c(0.250,0.1,0.25,0.1,0.1,0.01)
 
-  nw=7 #number of wells + 1 (the tank)
+  nw <- 7 #number of wells + 1 (the tank)
   links<- data.frame(matrix(ncol=2, nrow=(nw-1)))
   links[1:(nw-1),1]<-1:(nw-1)
   links[1,2]<-0 ; links[2,2]<-1 ; links[3,2]<-0
@@ -58,4 +58,32 @@ test_that("wellsolve() works", {
   expect_equal_to_reference(result_lc1, 'expected/result_lc1.rds')
   expect_equal_to_reference(result_b, 'expected/result_b.rds')
   expect_equal_to_reference(result_c, 'expected/result_c.rds')
+})
+
+test_that("calculate_distances() works", {
+  projected <- "+proj=utm +zone=34"
+  x0 = 650000
+  y0 = 4400000
+
+  # the first value is the tank and the rest are wells
+  xc <- c() ; xc <- c(0,100,180,100,700,800,900) ; xc <- xc + x0 -10000
+  yc <- c() ; yc <- c(0,0,0,80,0,0,900) ; yc <- yc + y0 -10000
+
+  xextra<- c() ; xextra <- c(500,800) ; xextra <- xextra + x0 -10000
+  yextra<- c() ; yextra <- c(500,300) ; yextra <- yextra + y0 -10000
+  qextra<- c() ; qextra[1]<- 0; qextra[2]<- 0
+
+  xextra<- c(xextra,xc)
+  yextra<- c(yextra,yc)
+
+  result <- calculate_distances(xc, yc, projected, r0=0.2, nw=length(xc))
+  resultextra <-
+    calculate_distances(xextra, yextra, projected, r0=0.2, nw=length(xextra))
+  expect_equal_to_reference(result$r, 'expected/r.rds')
+  expect_equal_to_reference(result$coords, 'expected/coords.rds')
+  expect_equal_to_reference(result$test, 'expected/test.rds')
+
+  expect_equal_to_reference(resultextra$r, 'expected/rextra.rds')
+  expect_equal_to_reference(resultextra$coords, 'expected/coordsextra.rds')
+  expect_equal_to_reference(resultextra$test, 'expected/testextra.rds')
 })

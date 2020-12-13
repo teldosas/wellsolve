@@ -35,23 +35,11 @@
 #' @example man/examples/example.R
 wellsolve <- function(projected, T,R,ff,qtot,r0,Dlist,qextra,nw,
                       xc,yc,links,nwextra,xextra,yextra, xstart) {
-  xy<-data.frame(matrix(ncol=2, nrow=nw)) ; xy[[1]] <- xc ; xy[[2]] <- yc
-  coords = cbind(Easting=xy[1], Northing=xy[2])
-  test = sp::SpatialPointsDataFrame(coords, xy, proj4string = sp::CRS(projected))
-  test@data[[3]] <- 0:(nw-1)
-  #tmap::qtm(test)
-  r<-rgeos::gDistance(test, byid=TRUE)
-  i=0; while (i<nw) {i=i+1; r[[i,i]]=r0}
-  xextra<- c(xextra,xc)
-  yextra<- c(yextra,yc)
-  xyextra<-data.frame(matrix(ncol=2, nrow=nwextra)) ; xyextra[[1]] <- xextra ; xyextra[[2]] <- yextra
-  coordsextra = cbind(Easting=xyextra[1], Northing=xyextra[2])
-  testextra = sp::SpatialPointsDataFrame(coordsextra, xyextra, proj4string = sp::CRS(projected))
-  testextra@data[[3]] <- 0:(nwextra-1)
-  #tmap::qtm(testextra)
-  rextra<-rgeos::gDistance(testextra, byid=TRUE)
-  i=0; while (i<nwextra) {i=i+1; rextra[[i,i]]=r0}
-
+  temp <- calculate_distances(xc, yc, projected, r0, nw)
+  r <- temp$r; coords <- temp$coords; test <- temp$test;
+  temp <-
+    calculate_distances(c(xextra,xc), c(yextra,yc), projected, r0, nwextra)
+  rextra <- temp$r; coordsextra <- temp$coords; testextra <- temp$test;
 
   lines <-list()
   names<-c()
@@ -203,4 +191,17 @@ wellsolve <- function(projected, T,R,ff,qtot,r0,Dlist,qextra,nw,
   sfinal <- s[1:nrow(s),1] + sextra[(nwextra-nw+2):nwextra,1]
 
   return<-list(qresult,hf,s,printmap,sfinal,as.matrix(kx),QQsquare)
+}
+
+calculate_distances <- function(xc, yc, projected, r0, nw) {
+  xy<-data.frame(matrix(ncol=2, nrow=nw)) ; xy[[1]] <- xc ; xy[[2]] <- yc
+  coords <- cbind(Easting=xy[1], Northing=xy[2])
+  test = sp::SpatialPointsDataFrame(coords, xy, proj4string = sp::CRS(projected))
+  test@data[[3]] <- 0:(nw-1)
+
+  r<-rgeos::gDistance(test, byid=TRUE)
+
+  i=0; while (i<nw) {i=i+1; r[[i,i]]=r0}
+
+  list(r=r, coords=coords, test=test)
 }
