@@ -134,17 +134,7 @@ wellsolve <- function(projected, T,R,ff,qtot,r0,Dlist,qextra,nw,
   rextranot<-rextra
   rextranot[(nwextra-nw+1):nrow(rextranot),(nwextra-nw+1):nrow(rextranot)]<-0
 
-  sbasicextra <- data.frame(matrix(ncol=(nwextra-nw),nrow=nwextra))
-  sextra <- data.frame(matrix(ncol=1,nrow=nwextra)); sextra[,] <-0
-  j=0
-  while (j<(nwextra)){
-    j=j+1 ;   k=0
-    while (k<(nwextra-nw)){
-      k=k+1
-      sbasicextra[[j,k]]<- (-1/(2*T*pi)) * qextra[k] * log(rextranot[k,j]/R)
-    }
-    sextra[[j,1]] <- sum(sbasicextra[j,])
-  }
+  sextra <- calculate_s(ncol=nwextra-nw, nrow=nwextra, qextra, rextranot, R, T)
   dextra <- sextra[((nwextra-nw+1):nrow(sextra)),1]
   dextra <- dextra[1]-dextra
   dextra <- dextra[2:nw]
@@ -175,18 +165,7 @@ wellsolve <- function(projected, T,R,ff,qtot,r0,Dlist,qextra,nw,
   QQsquare<- QQ^2
   hf <- as.matrix(kx) %*% QQsquare
 
-  sbasic <- data.frame(matrix(ncol=(nw-1),nrow=(nw-1)))
-  s <- data.frame(matrix(ncol=1,nrow=(nw-1)))
-  j=0
-  while (j<(nw-1)){
-    j=j+1 ;   k=0
-    while (k<(nw-1)){
-      k=k+1
-      sbasic[[j,k]]<- (-1/(2*T*pi)) * qresult[k] * log(rnot[k,j]/R)
-    }
-    s[[j,1]] <- sum(sbasic[j,])
-  }
-
+  s <- calculate_s(ncol=nw-1, nrow=nw-1, qresult, rnot, R, T)
 
   sfinal <- s[1:nrow(s),1] + sextra[(nwextra-nw+2):nwextra,1]
 
@@ -204,4 +183,20 @@ calculate_distances <- function(xc, yc, projected, r0, nw) {
   i=0; while (i<nw) {i=i+1; r[[i,i]]=r0}
 
   list(r=r, coords=coords, test=test)
+}
+
+calculate_s <- function(ncol, nrow, q, rnot, R, T) {
+  sbasic <- data.frame(matrix(ncol=ncol,nrow=nrow))
+  s <- data.frame(matrix(ncol=1,nrow=nrow))
+  j=0
+  while (j<nrow){
+    j=j+1 ;   k=0
+    while (k<ncol){
+      k=k+1
+      sbasic[[j,k]]<- (-1/(2*T*pi)) * q[k] * log(rnot[k,j]/R)
+    }
+    s[[j,1]] <- sum(sbasic[j,])
+  }
+
+  s
 }

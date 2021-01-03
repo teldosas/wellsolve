@@ -30,7 +30,6 @@ yextra<- c() ; yextra <- c(500,300) ; yextra <- yextra + y0 -10000
 qextra<- c() ; qextra[1]<- 0; qextra[2]<- 0
 
 test_that("wellsolve() works", {
-
   default_wellsolve <-
     function(ff) wellsolve(projected,
                            T=0.0025, R=3000, ff=ff, qtot<-0.5, r0=0.200,
@@ -76,4 +75,25 @@ test_that("calculate_distances() works", {
   expect_equal_to_reference(resultextra$r, 'expected/rextra.rds')
   expect_equal_to_reference(resultextra$coords, 'expected/coordsextra.rds')
   expect_equal_to_reference(resultextra$test, 'expected/testextra.rds')
+})
+
+test_that("calculate_s() works", {
+  # Case C
+  qextra[1] <- 0.1
+  qextra[2] <- 0.4
+
+  qresult <- readRDS('mocks/qresult.rds')
+
+  rnot <- readRDS('mocks/rnot.rds')
+  rextranot <- readRDS('mocks/rextranot.rds')
+
+  R <- 3000
+  T <- 0.0025
+
+  s <- calculate_s(ncol=nw-1, nrow=nw-1, qresult, rnot, R, T)
+  sextra <-
+    calculate_s(ncol=nwextra-nw, nrow=nwextra, qextra, rextranot, R, T)
+
+  expect_equal_to_reference(s, 'expected/s.rds')
+  expect_equal_to_reference(sextra, 'expected/sextra.rds')
 })
