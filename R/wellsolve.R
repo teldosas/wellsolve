@@ -51,32 +51,7 @@ wellsolve <- function(projected, T,R,ff,qtot,r0,Dlist,qextra,nw,
     lines[[names[i]]] <-  raster::spLines(var, attr=data.frame(start=i,end=links[i,2]), crs=projected)
   }
 
-
-  final_map<- test
-  final_map@data[[4]] <- 10
-  final_map@data[[1,4]] <- 0
-  colnames(final_map@data)<-c("x","y","number","points")
-  Mypal <- c('#FF0000','#313695')
-
-
-  fplot <- function(nw) {
-    printm<- tmap::tm_shape(final_map) + tmap::tm_symbols(size= 1, col="number", breaks=c(-5 , 0.5, 100),
-                                              style = "fixed",  palette=Mypal, contrast=1, labels = c("tank","wells"))
-    i=0
-    while(i<(nw-1)){
-      i=i+1
-      printm<-printm+tmap::qtm(lines[[i]])
-    }
-    return<-printm
-  }
-
-
-  if(!(sum(qextra)==0)) {
-    printmap<-fplot(nw)+tmap::qtm(testextra)
-  } else {
-    printmap<-fplot(nw)
-  }
-
+  printmap <- render_diagram(test, lines, qextra, nw, testextra)
 
   Cmatrix <- data.frame(matrix(ncol=(nw-1), nrow=(nw-1)))
   Cmatrix[,] <-0
@@ -199,4 +174,31 @@ calculate_s <- function(ncol, nrow, q, rnot, R, T) {
   }
 
   s
+}
+
+render_diagram <- function(test, lines, qextra, nw, testextra) {
+  final_map<- test
+  final_map@data[[4]] <- 10
+  final_map@data[[1,4]] <- 0
+  colnames(final_map@data)<-c("x","y","number","points")
+  Mypal <- c('#FF0000','#313695')
+
+
+  fplot <- function(nw) {
+    printm<- tmap::tm_shape(final_map) + tmap::tm_symbols(size= 1, col="number", breaks=c(-5 , 0.5, 100),
+                                                          style = "fixed",  palette=Mypal, contrast=1, labels = c("tank","wells"))
+    i=0
+    while(i<(nw-1)){
+      i=i+1
+      printm<-printm+tmap::qtm(lines[[i]])
+    }
+    return<-printm
+  }
+
+
+  if(!(sum(qextra)==0)) {
+    printmap<-fplot(nw)+tmap::qtm(testextra)
+  } else {
+    printmap<-fplot(nw)
+  }
 }
