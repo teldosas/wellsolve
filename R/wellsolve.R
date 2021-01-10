@@ -69,18 +69,8 @@ wellsolve <- function(projected, T,R,ff,qtot,r0,Dlist,qextra,nw,
     }
   }
 
-
   cn_ <- Cmatrix[,]-Cmatrix[,(nw-1)]
-  ct <- data.frame(matrix(ncol=(nw-1), nrow=(nw-1)))
-  i=0
-  while (i<(nw-1)){
-    i=i+1
-    j=0
-    while(j<(nw-1)){
-      j=j+1
-      ct[[i,j]] <- cn_[[j,i]]
-    }
-  }
+  ct <- t(cn_)
 
   kx <- data.frame(matrix(ncol=(nw-1), nrow=(nw-1)))
   kx[,] <-0
