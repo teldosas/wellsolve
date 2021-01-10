@@ -126,8 +126,7 @@ wellsolve <- function(projected, T,R,ff,qtot,r0,Dlist,qextra,nw,
     resultnew<-rep(NA,length(qn))
     q<-data.frame(matrix(ncol=1, nrow=(nw-1)))
     q[1:(nw-1),1] <- qn[1:(nw-1)]
-    QQ<- as.matrix(Cmatrix) %*% as.matrix(q)
-    QQsquare<- QQ^2
+    QQsquare <- calculate_QQsquare(Cmatrix, q);
     result<-2 * as.matrix(a) %*% as.matrix(q) + 3 * as.matrix(ct) %*% as.matrix(kx) %*% QQsquare -as.matrix(dmatrix)
     resultnew[1:(nw-1)]<-result[1:(nw-1),1]
     return<- resultnew
@@ -136,8 +135,7 @@ wellsolve <- function(projected, T,R,ff,qtot,r0,Dlist,qextra,nw,
   newans<- nleqslv::nleqslv(xstart, main, control=list(trace=1,btol=.01,delta="newton"))
   qresult<-newans[["x"]]
 
-  QQ <- as.matrix(Cmatrix) %*% as.matrix(qresult)
-  QQsquare<- QQ^2
+  QQsquare<- calculate_QQsquare(Cmatrix, qresult)
   hf <- as.matrix(kx) %*% QQsquare
 
   s <- calculate_s(ncol=nw-1, nrow=nw-1, qresult, rnot, R, T)
@@ -174,6 +172,11 @@ calculate_s <- function(ncol, nrow, q, rnot, R, T) {
   }
 
   s
+}
+
+calculate_QQsquare <- function(Cmatrix, q) {
+  QQ<- as.matrix(Cmatrix) %*% as.matrix(q)
+  QQsquare<- QQ^2
 }
 
 render_diagram <- function(test, lines, qextra, nw, testextra) {
