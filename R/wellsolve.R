@@ -33,6 +33,12 @@
 #' @export
 #'
 #' @example man/examples/example.R
+#'
+#' @references
+#' Nagkoulis, N., Katsifarakis, K. Minimization of Total Pumping Cost from
+#' an Aquifer to a Water Tank, Via a Pipe Network.
+#' Water Resour Manage 34, 4147–4162 (2020).
+#' <https://doi.org/10.1007/s11269-020-02661-x>
 wellsolve <- function(projected, T,R,ff,qtot,r0,Dlist,qextra,nw,
                       xc,yc,links,nwextra,xextra,yextra, xstart) {
   temp <- calculate_distances(xc, yc, projected, r0, nw)
