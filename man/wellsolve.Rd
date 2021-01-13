@@ -55,7 +55,9 @@ the rest are the wells.}
 \item{yc}{A vector with y coordinates. The first value is the tank and
 the rest are the wells.}
 
-\item{links}{??? The links between the wells.}
+\item{links}{A two-column matrix describing the links between the wells. Each
+row describes one link. The two columns contain the id numbers of the
+connected wells. The id number of the tank is 0.}
 
 \item{nwextra}{Number of extra wells.}
 
@@ -67,7 +69,15 @@ the rest are the wells.}
 This helps the algorithm search for the result in the correct area}
 }
 \value{
-??? A list of 7
+A list containing the following:
+\item{qresult}{The optimal well flows}
+\item{hf}{The hydraulic head losses}
+\item{s}{The hydraulic head level drawdowns}
+\item{printmap}{The diagram of the tank and the wells}
+\item{sfinal}{The hydraulic head level drawdowns including
+those of the extra wells}
+\item{kx}{The xi constant of the Darcy-Weisbach formula}
+\item{QQsqure}{The square of the pipe flow rates}
 }
 \description{
 Minimize the Total Pumping Cost from an Aquifer

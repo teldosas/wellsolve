@@ -22,14 +22,24 @@
 #' the rest are the wells.
 #' @param yc A vector with y coordinates. The first value is the tank and
 #' the rest are the wells.
-#' @param links ??? The links between the wells.
+#' @param links A two-column matrix describing the links between the wells. Each
+#' row describes one link. The two columns contain the id numbers of the
+#' connected wells. The id number of the tank is 0.
 #' @param nwextra Number of extra wells.
 #' @param xextra A vector with x coordinates for the extra wells.
 #' @param yextra A vector with y coordinates for the extra wells.
 #' @param xstart A wild guess about the result.
 #' This helps the algorithm search for the result in the correct area
 #'
-#' @return ??? A list of 7
+#' @return A list containing the following:
+#' \item{qresult}{The optimal well flows}
+#' \item{hf}{The hydraulic head losses}
+#' \item{s}{The hydraulic head level drawdowns}
+#' \item{printmap}{The diagram of the tank and the wells}
+#' \item{sfinal}{The hydraulic head level drawdowns including
+#' those of the extra wells}
+#' \item{kx}{The xi constant of the Darcy-Weisbach formula}
+#' \item{QQsqure}{The square of the pipe flow rates}
 #' @export
 #'
 #' @example man/examples/example.R
