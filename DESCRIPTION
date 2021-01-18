@@ -1,5 +1,6 @@
 Package: wellsolve
-Title: What the Package Does (One Line, Title Case)
+Title: Minimize the Total Pumping Cost from an Aquifer 
+    to a Water Tank, Via a Pipe Network
 Version: 0.0.0.9000
 Authors@R: 
     c(person(given = "Aristotelis",
