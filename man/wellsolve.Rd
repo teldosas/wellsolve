@@ -147,5 +147,5 @@ result<-wellsolve(projected, T=0.0025 ,R=3000, ff=0.03, qtot<-0.5, r0=0.200,
 Nagkoulis, N., Katsifarakis, K. Minimization of Total Pumping Cost from
 an Aquifer to a Water Tank, Via a Pipe Network.
 Water Resour Manage 34, 4147–4162 (2020).
-\url{https://doi.org/10.1007/s11269-020-02661-x}
+\doi{10.1007/s11269-020-02661-x}
 }
