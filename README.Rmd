@@ -1,0 +1,35 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# wellsolve
+
+<!-- badges: start -->
+[![Travis build status](https://travis-ci.com/teldosas/wellsolve.svg?branch=master)](https://travis-ci.com/teldosas/wellsolve)
+<!-- badges: end -->
+
+The goal of wellsolve is to minimize the Total Pumping Cost from an Aquifer 
+to a Water Tank, Via a Pipe Network
+
+## Installation
+
+You can install the released version of wellsolve from [CRAN](https://CRAN.R-project.org) with:
+
+``` r
+install.packages("wellsolve")
+```
+
+And the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("teldosas/wellsolve")
+```
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r wellsolve, code=xfun::read_utf8('man/examples/example.R')}
+```
