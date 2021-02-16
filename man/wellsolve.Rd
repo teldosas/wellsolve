@@ -20,7 +20,8 @@ wellsolve(
   nwextra,
   xextra,
   yextra,
-  xstart
+  xstart,
+  g = 9.81
 )
 }
 \arguments{
@@ -67,6 +68,8 @@ connected wells. The id number of the tank is 0.}
 
 \item{xstart}{A wild guess about the result.
 This helps the algorithm search for the result in the correct area}
+
+\item{g}{Acceleration of gravity.}
 }
 \value{
 A list containing the following:

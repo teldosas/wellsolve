@@ -30,6 +30,7 @@
 #' @param yextra A vector with y coordinates for the extra wells.
 #' @param xstart A wild guess about the result.
 #' This helps the algorithm search for the result in the correct area
+#' @param g Acceleration of gravity.
 #'
 #' @return A list containing the following:
 #' \item{qresult}{The optimal well flows}
@@ -49,8 +50,9 @@
 #' an Aquifer to a Water Tank, Via a Pipe Network.
 #' Water Resour Manage 34, 4147–4162 (2020).
 #' \doi{10.1007/s11269-020-02661-x}
-wellsolve <- function(projected, T,R,ff,qtot,r0,Dlist,qextra,nw,
-                      xc,yc,links,nwextra,xextra,yextra, xstart) {
+wellsolve <- function(projected, T, R,ff, qtot, r0, Dlist, qextra, nw,
+                      xc, yc, links, nwextra, xextra, yextra, xstart,
+                      g = 9.81) {
   temp <- calculate_distances(xc, yc, projected, r0, nw)
   r <- temp$r; coords <- temp$coords; test <- temp$test;
   temp <-
@@ -96,7 +98,7 @@ wellsolve <- function(projected, T,R,ff,qtot,r0,Dlist,qextra,nw,
     lines[[i]]@data[[3]] <- r[lines[[i]]@data[[1]]+1,lines[[i]]@data[[2]]+1]
     # Darcy–Weisbach formula
     lines[[i]]@data[[4]] <-
-      8*ff*lines[[i]]@data[[3]] / ( (Dlist[[i]]^5) * 9.81 *(pi)^2 )
+      8*ff*lines[[i]]@data[[3]] / ( (Dlist[[i]]^5) * g *(pi)^2 )
     kx[[i,i]]<-lines[[i]]@data[[4]]
   }
 
