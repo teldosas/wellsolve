@@ -25,7 +25,6 @@ Dlist[1:6]<-0.05
 
 # number of extra wells
 nwextra <- 2
-nwextra <- nwextra + nw
 xextra<- c() ; xextra <- c(500,800) ; xextra <- xextra + x0 -10000
 yextra<- c() ; yextra <- c(500,300) ; yextra <- yextra + y0 -10000
 qextra<- c() ; qextra[1]<- 0; qextra[2]<- 0

@@ -55,6 +55,8 @@ wellsolve <- function(projected, T, R,ff, qtot, r0, Dlist, qextra, nw,
                       g = 9.81) {
   temp <- calculate_distances(xc, yc, projected, r0, nw)
   r <- temp$r; coords <- temp$coords; test <- temp$test;
+
+  nwextra <- nwextra + nw
   temp <-
     calculate_distances(c(xextra,xc), c(yextra,yc), projected, r0, nwextra)
   rextra <- temp$r; coordsextra <- temp$coords; testextra <- temp$test;
