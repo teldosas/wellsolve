@@ -2,4 +2,5 @@
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^LICENSE\.md$
+^cran-comments\.md$
 ^README\.Rmd$
