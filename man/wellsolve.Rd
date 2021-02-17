@@ -87,6 +87,8 @@ Minimize the Total Pumping Cost from an Aquifer
 to a Water Tank, Via a Pipe Network
 }
 \examples{
+library(wellsolve)
+
 projected <- "+proj=utm +zone=34"
 x0 = 650000
 y0 = 4400000
@@ -104,11 +106,8 @@ links<- data.frame(matrix(ncol=2, nrow=(nw-1)))
 links[1:(nw-1),1]<-1:(nw-1)
 links[1,2]<-0 ; links[2,2]<-1 ; links[3,2]<-0
 links[4,2]<-2 ; links[5,2]<-4 ; links[6,2]<-2
-links[7,1:2]<-c(5, 6)
 
 Dlist<-list()
-#Dlist[[1]]<-0.6; Dlist[[2]]<-0.6; Dlist[[3]]<-0.4
-#Dlist[[4]]<-0.4; Dlist[[5]]<-0.4; Dlist[[6]]<-0.4
 Dlist[1:6]<-0.05
 
 
@@ -140,10 +139,6 @@ qextra[1] <- 0.1
 qextra[2] <- 0.4
 result<-wellsolve(projected, T=0.0025 ,R=3000, ff=0.03, qtot<-0.5, r0=0.200,
                   Dlist,qextra,nw,xc,yc,links,nwextra,xextra,yextra, xstart)
-
-# T=0.0025 ;R=3000; ff=0.03; qtot<-0.5; r0=0.200
-
-
 }
 \references{
 Nagkoulis, N., Katsifarakis, K. Minimization of Total Pumping Cost from
