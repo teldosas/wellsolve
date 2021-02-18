@@ -152,7 +152,8 @@ wellsolve <- function(projected, T, R,ff, qtot, r0, Dlist, qextra, nw,
 
   sfinal <- s[1:nrow(s),1] + sextra[(nwextra-nw+2):nwextra,1]
 
-  return<-list(qresult,hf,s,printmap,sfinal,as.matrix(kx),QQsquare)
+  return<-list(qresult=qresult,hf=hf,s=s,printmap=printmap,
+               sfinal=sfinal,kx=as.matrix(kx),QQsquare=QQsquare)
 }
 
 calculate_distances <- function(xc, yc, projected, r0, nw) {
