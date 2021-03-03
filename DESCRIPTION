@@ -10,7 +10,13 @@ Authors@R:
       person(give = "Nikolaos",
             family = "Nagkoulis",
             role = c("aut")))
-Description: What the package does (one paragraph).
+Description: Supposing that a number of wells pumps water from an infinite 
+    confined aquifer, transferring the water through pipes to a water tank, 
+    using this package makes it possible to allocate the pumping flow rates 
+    so that the overall operational cost is minimized. The user can insert 
+    the locations of the wells, the pipe network, the aquifer characteristics 
+    and the water demand and get the allocation of the pumping flow rates, 
+    the hydraulic drawdowns and the head losses due to pipe frictions.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

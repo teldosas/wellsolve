@@ -9,8 +9,13 @@
 status](https://travis-ci.com/teldosas/wellsolve.svg?branch=master)](https://travis-ci.com/teldosas/wellsolve)
 <!-- badges: end -->
 
-The goal of wellsolve is to minimize the Total Pumping Cost from an
-Aquifer to a Water Tank, Via a Pipe Network
+Supposing that a number of wells pumps water from an infinite confined
+aquifer, transferring the water through pipes to a water tank, using
+this package makes it possible to allocate the pumping flow rates so
+that the overall operational cost is minimized. The user can insert the
+locations of the wells, the pipe network, the aquifer characteristics
+and the water demand and get the allocation of the pumping flow rates,
+the hydraulic drawdowns and the head losses due to pipe frictions.
 
 ## Installation
 
