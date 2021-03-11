@@ -39,7 +39,7 @@
 #' \item{printmap}{The diagram of the tank and the wells}
 #' \item{sfinal}{The hydraulic head level drawdowns including
 #' those of the extra wells}
-#' \item{kx}{The xi constant of the Darcy-Weisbach formula}
+#' \item{xi}{The xi constant of the Darcy-Weisbach formula}
 #' \item{QQsqure}{The square of the pipe flow rates}
 #' @export
 #'
@@ -54,30 +54,36 @@ wellsolve <- function(projected, T, R,ff, qtot, r0, Dlist, qextra, nw,
                       xc, yc, links, nwextra, xextra, yextra, xstart,
                       g = 9.81) {
   temp <- calculate_distances(xc, yc, projected, r0, nw)
-  r <- temp$r; coords <- temp$coords; test <- temp$test;
+  r <- temp$r
+  coords <- temp$coords
+  test <- temp$test
 
   nwextra <- nwextra + nw
   temp <-
     calculate_distances(c(xextra,xc), c(yextra,yc), projected, r0, nwextra)
-  rextra <- temp$r; coordsextra <- temp$coords; testextra <- temp$test;
+  rextra <- temp$r
+  coordsextra <- temp$coords
+  testextra <- temp$test
 
   lines <-list()
   names<-c()
   i=0
   while (i<nw-1) {
     i=i+1
-    names<-c(names,paste0("line",i))
-    var <- rbind(c(coords[i+1,1],coords[i+1,2]),c(coords[links[i,2]+1,1],coords[links[i,2]+1,2]))
-    lines[[names[i]]] <-  raster::spLines(var, attr=data.frame(start=i,end=links[i,2]), crs=projected)
+    names <- c(names, paste0("line", i))
+    var <- rbind(c(coords[i+1,1], coords[i+1,2]),
+                 c(coords[links[i,2] + 1, 1], coords[links[i,2]+1,2]))
+    lines[[names[i]]] <- raster::spLines(var,
+                attr=data.frame(start=i, end=links[i,2]), crs=projected)
   }
 
   printmap <- render_diagram(test, lines, qextra, nw, testextra)
 
   Cmatrix <- data.frame(matrix(ncol=(nw-1), nrow=(nw-1)))
-  Cmatrix[,] <-0
+  Cmatrix[,] <- 0
 
   i=0
-  while (i<(nw-1)){
+  while (i < (nw-1)){
     i=i+1
     Cmatrix[[i,i]]<-1
     if (!(lines[[i]]@data[["end"]]==0)) {
@@ -92,84 +98,92 @@ wellsolve <- function(projected, T, R,ff, qtot, r0, Dlist, qextra, nw,
   cn_ <- Cmatrix[,]-Cmatrix[,(nw-1)]
   ct <- t(cn_)
 
-  kx <- data.frame(matrix(ncol=(nw-1), nrow=(nw-1)))
-  kx[,] <-0
+  xi <- data.frame(matrix(ncol=(nw-1), nrow=(nw-1)))
+  xi[,] <-0
   i=0
-  while (i<(nw-1)) {
+  while (i < (nw-1)) {
     i=i+1
     lines[[i]]@data[[3]] <- r[lines[[i]]@data[[1]]+1,lines[[i]]@data[[2]]+1]
     # Darcy–Weisbach formula
     lines[[i]]@data[[4]] <-
       8*ff*lines[[i]]@data[[3]] / ( (Dlist[[i]]^5) * g *(pi)^2 )
-    kx[[i,i]]<-lines[[i]]@data[[4]]
+    xi[[i,i]]<-lines[[i]]@data[[4]]
   }
 
-  rnot<-r[2:nw,2:nw]
+  rnotank <- r[2:nw,2:nw]
   a <- data.frame(matrix(ncol=(nw-1), nrow=(nw-1)))
   i=0
   while (i<(nw-1)) {
     i=i+1;  j=0
     while (j<(nw-1)) {
       j=j+1
-      a[[i,j]] <- -log(rnot[[i,j]]/rnot[[j,(nw-1)]]) * (1/(2*pi*T))
+      a[[i,j]] <- -log(rnotank[[i,j]]/rnotank[[j,(nw-1)]]) * (1/(2*pi*T))
     }
   }
   a[(nw-1),] <- 0.5
 
-  rextranot<-rextra
-  rextranot[(nwextra-nw+1):nrow(rextranot),(nwextra-nw+1):nrow(rextranot)]<-0
+  rextranotank <- rextra
+  start <- (nwextra-nw+1)
+  rextranotank[start:nrow(rextranotank),start:nrow(rextranotank)] <- 0
 
-  sextra <- calculate_s(ncol=nwextra-nw, nrow=nwextra, qextra, rextranot, R, T)
-  dextra <- sextra[((nwextra-nw+1):nrow(sextra)),1]
+  sextra <- calculate_s(ncol=nwextra-nw, nrow=nwextra,
+                        qextra, rextranotank, R, T)
+  dextra <- sextra[(start:nrow(sextra)),1]
   dextra <- dextra[1]-dextra
   dextra <- dextra[2:nw]
 
 
   dmatrix <- data.frame(matrix(ncol=1, nrow=(nw-1)))
-  dmatrix[,] <-0
-  dmatrix[1:5,1] <-dextra[1:5]-dextra[6]
-  dmatrix[(nw-1),1]<-qtot
+  dmatrix[,] <- 0
+  dmatrix[1:5,1] <- dextra[1:5] - dextra[6]
+  dmatrix[(nw-1),1] <- qtot
 
-  QQ<-data.frame(matrix(ncol=1, nrow=length(lines)))
+  QQ <- data.frame(matrix(ncol=1, nrow=length(lines)))
 
   main <- function(qn) {
     resultnew<-rep(NA,length(qn))
-    q<-data.frame(matrix(ncol=1, nrow=(nw-1)))
+    q <- data.frame(matrix(ncol=1, nrow=(nw-1)))
     q[1:(nw-1),1] <- qn[1:(nw-1)]
     QQsquare <- calculate_QQsquare(Cmatrix, q);
-    result<-2 * as.matrix(a) %*% as.matrix(q) + 3 * as.matrix(ct) %*% as.matrix(kx) %*% QQsquare -as.matrix(dmatrix)
-    resultnew[1:(nw-1)]<-result[1:(nw-1),1]
-    return<- resultnew
+    result <- 2 * as.matrix(a) %*% as.matrix(q) +
+      3 * as.matrix(ct) %*% as.matrix(xi) %*% QQsquare - as.matrix(dmatrix)
+    resultnew[1:(nw-1)] <- result[1:(nw-1),1]
+    resultnew
   }
 
-  newans<- nleqslv::nleqslv(xstart, main, control=list(trace=1,btol=.01,delta="newton"))
-  qresult<-newans[["x"]]
+  newans <- nleqslv::nleqslv(xstart, main,
+                            control=list(trace=1,btol=.01,delta="newton"))
+  qresult <- newans[["x"]]
 
-  QQsquare<- calculate_QQsquare(Cmatrix, qresult)
-  hf <- as.matrix(kx) %*% QQsquare
+  QQsquare <- calculate_QQsquare(Cmatrix, qresult)
+  hf <- as.matrix(xi) %*% QQsquare
 
-  s <- calculate_s(ncol=nw-1, nrow=nw-1, qresult, rnot, R, T)
+  s <- calculate_s(ncol=nw-1, nrow=nw-1, qresult, rnotank, R, T)
 
   sfinal <- s[1:nrow(s),1] + sextra[(nwextra-nw+2):nwextra,1]
 
-  return<-list(qresult=qresult,hf=hf,s=s,printmap=printmap,
-               sfinal=sfinal,kx=as.matrix(kx),QQsquare=QQsquare)
+  list(qresult=qresult, hf=hf, s=s, printmap=printmap,
+               sfinal=sfinal, xi=as.matrix(xi), QQsquare=QQsquare)
 }
 
 calculate_distances <- function(xc, yc, projected, r0, nw) {
-  xy<-data.frame(matrix(ncol=2, nrow=nw)) ; xy[[1]] <- xc ; xy[[2]] <- yc
+  xy <- data.frame(matrix(ncol=2, nrow=nw))
+  xy[[1]] <- xc
+  xy[[2]] <- yc
+
   coords <- cbind(Easting=xy[1], Northing=xy[2])
-  test = sp::SpatialPointsDataFrame(coords, xy, proj4string = sp::CRS(projected))
+  test = sp::SpatialPointsDataFrame(coords, xy,
+                                    proj4string = sp::CRS(projected))
   test@data[[3]] <- 0:(nw-1)
 
-  r<-rgeos::gDistance(test, byid=TRUE)
+  r <- rgeos::gDistance(test, byid=TRUE)
 
   i=0; while (i<nw) {i=i+1; r[[i,i]]=r0}
 
   list(r=r, coords=coords, test=test)
 }
 
-calculate_s <- function(ncol, nrow, q, rnot, R, T) {
+calculate_s <- function(ncol, nrow, q, rnotank, R, T) {
   sbasic <- data.frame(matrix(ncol=ncol,nrow=nrow))
   s <- data.frame(matrix(ncol=1,nrow=nrow))
   j=0
@@ -177,7 +191,7 @@ calculate_s <- function(ncol, nrow, q, rnot, R, T) {
     j=j+1 ;   k=0
     while (k<ncol){
       k=k+1
-      sbasic[[j,k]]<- (-1/(2*T*pi)) * q[k] * log(rnot[k,j]/R)
+      sbasic[[j,k]]<- (-1/(2*T*pi)) * q[k] * log(rnotank[k,j]/R)
     }
     s[[j,1]] <- sum(sbasic[j,])
   }
@@ -186,33 +200,34 @@ calculate_s <- function(ncol, nrow, q, rnot, R, T) {
 }
 
 calculate_QQsquare <- function(Cmatrix, q) {
-  QQ<- as.matrix(Cmatrix) %*% as.matrix(q)
+  QQ <- as.matrix(Cmatrix) %*% as.matrix(q)
   QQsquare<- QQ^2
 }
 
 render_diagram <- function(test, lines, qextra, nw, testextra) {
-  final_map<- test
+  final_map <- test
   final_map@data[[4]] <- 10
   final_map@data[[1,4]] <- 0
-  colnames(final_map@data)<-c("x","y","number","points")
-  Mypal <- c('#FF0000','#313695')
+  colnames(final_map@data) <- c("x", "y", "number", "points")
+  Mypal <- c('#FF0000', '#313695')
 
 
   fplot <- function(nw) {
-    printm<- tmap::tm_shape(final_map) + tmap::tm_symbols(size= 1, col="number", breaks=c(-5 , 0.5, 100),
-                                                          style = "fixed",  palette=Mypal, contrast=1, labels = c("tank","wells"))
+    printm<- tmap::tm_shape(final_map) + tmap::tm_symbols(size= 1, col="number",
+        breaks=c(-5 , 0.5, 100), style = "fixed",  palette=Mypal, contrast=1,
+        labels = c("tank", "wells"))
     i=0
     while(i<(nw-1)){
       i=i+1
-      printm<-printm+tmap::qtm(lines[[i]])
+      printm <- printm+tmap::qtm(lines[[i]])
     }
-    return<-printm
+    printm
   }
 
 
   if(!(sum(qextra)==0)) {
-    printmap<-fplot(nw)+tmap::qtm(testextra)
+    printmap <- fplot(nw)+tmap::qtm(testextra)
   } else {
-    printmap<-fplot(nw)
+    printmap <- fplot(nw)
   }
 }
