@@ -57,6 +57,16 @@ xstart <- c(0.250,0.1,0.25,0.1,0.1,0.01)
 
 nw=7 #number of wells + 1 (the tank)
 
+#                   6
+#                  /
+#                 /
+#       3        /
+#      /        /
+#    /        /
+#  /        /
+# T---1----2------4----5
+#
+# T=Tank 1-6=Wells no. 1-6
 links <- data.frame(matrix(ncol=2, nrow=(nw-1)))
 links[1:(nw-1),1] <- 1:(nw-1)
 links[1,2] <- 0
