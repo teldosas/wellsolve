@@ -10,6 +10,9 @@ output: github_document
 [![Travis build status](https://travis-ci.com/teldosas/wellsolve.svg?branch=master)](https://travis-ci.com/teldosas/wellsolve)
 <!-- badges: end -->
 
+Minimize the Total Pumping Cost from an Aquifer 
+to a Water Tank, via a Pipe Network
+
 Supposing that a number of wells pumps water from an infinite 
 confined aquifer, transferring the water through pipes to a water tank, 
 using this package makes it possible to allocate the pumping flow rates 

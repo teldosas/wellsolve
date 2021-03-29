@@ -1,6 +1,6 @@
 Package: wellsolve
 Title: Minimize the Total Pumping Cost from an Aquifer 
-    to a Water Tank, Via a Pipe Network
+  to a Water Tank, via a Pipe Network
 Version: 0.1.0
 Authors@R: 
     c(person(given = "Aristotelis",

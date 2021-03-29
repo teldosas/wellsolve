@@ -84,7 +84,7 @@ those of the extra wells}
 }
 \description{
 Minimize the Total Pumping Cost from an Aquifer
-to a Water Tank, Via a Pipe Network
+to a Water Tank, via a Pipe Network
 }
 \examples{
 library(wellsolve)
