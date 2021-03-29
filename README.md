@@ -17,6 +17,12 @@ locations of the wells, the pipe network, the aquifer characteristics
 and the water demand and get the allocation of the pumping flow rates,
 the hydraulic drawdowns and the head losses due to pipe frictions.
 
+See [*Nagkoulis, N., Katsifarakis, K. Minimization of Total Pumping Cost
+from an Aquifer to a Water Tank, Via a Pipe Network. Water Resour
+Manage 34, 4147–4162
+(2020)*](https://doi.org/10.1007/s11269-020-02661-x) for more
+information
+
 ## Installation
 
 You can install the released version of wellsolve from
